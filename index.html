@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pengembaraan Harimau Malaya — Kefahaman Bahasa Melayu</title>
+<style>
+:root{
+  --sky-top:#8FD3F4;--sky-bottom:#EAF8FF;--grass:#AEE5A4;--grass-dark:#8FD182;
+  --tiger:#FFA94D;--tiger-dark:#F08C3A;--cream:#FFF9F0;--ink:#4A3324;
+  --red:#EF6F6C;--red-dark:#D95552;--purple:#C9A6E8;--gold:#FFC93C;
+  --shadow:0 10px 25px rgba(74,51,36,.15);--radius:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;min-height:100%;font-family:'Trebuchet MS',Arial,sans-serif;color:var(--ink)}
+body{min-height:100vh;background:linear-gradient(var(--sky-top),var(--sky-bottom) 62%,var(--grass) 62%);background-attachment:fixed}
+button{font:inherit;cursor:pointer}
+#app{min-height:100vh;position:relative;overflow:hidden}
+.bg-deco{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.sun{position:absolute;top:5%;right:8%;width:70px;height:70px;border-radius:50%;background:#FFE082;box-shadow:0 0 35px 10px #ffe08288}
+.cloud{position:absolute;font-size:48px;opacity:.75;animation:drift 35s linear infinite}
+.cloud.one{top:9%;left:-80px}.cloud.two{top:18%;left:45%;font-size:35px;animation-duration:48s}
+@keyframes drift{from{transform:translateX(-100px)}to{transform:translateX(120vw)}}
+.screen{position:relative;z-index:1;display:none;min-height:100vh;width:100%;padding:18px 14px 30px;align-items:center;flex-direction:column}
+.screen.active{display:flex}
+.home-content{width:min(600px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:4vh}
+.game-logo{font-size:clamp(17px,4vw,25px);font-weight:900;color:var(--red-dark);text-shadow:2px 2px white}
+.game-title{font-size:clamp(32px,8vw,54px);line-height:1.02;font-weight:900;color:white;text-shadow:3px 3px var(--red-dark);margin:10px 0}
+.subtitle{background:white;border-radius:20px;padding:8px 16px;font-weight:700;box-shadow:var(--shadow)}
+.mascot{font-size:clamp(90px,20vw,140px);line-height:1.3;filter:drop-shadow(0 8px 6px #0002);animation:bob 2.3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
+.menu-btns{display:flex;flex-direction:column;gap:12px;width:min(340px,90vw);margin-top:16px}
+.big-btn{border:0;border-radius:20px;padding:14px 18px;font-weight:900;font-size:17px;box-shadow:0 5px 0 #0002,var(--shadow);transition:transform .12s}
+.big-btn:active{transform:translateY(3px)}
+.primary{background:var(--red);color:white}.secondary{background:white;color:var(--ink);border:3px solid var(--tiger)}.tertiary{background:var(--gold);color:var(--ink)}
+.panel{width:min(600px,100%);background:#ffffffef;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin:auto 0}
+.panel-title{text-align:center;font-size:clamp(22px,5vw,28px);color:var(--red-dark);margin:0 0 18px;font-weight:900}
+.level-grid{display:flex;flex-direction:column;gap:12px}
+.level-card{display:flex;align-items:center;gap:14px;background:#fff;border:3px solid #f3e5d2;border-radius:18px;padding:14px;text-align:left;width:100%;box-shadow:0 3px 0 #eadcc9}
+.level-num{display:grid;place-items:center;flex:0 0 44px;height:44px;border-radius:50%;background:var(--tiger);color:white;font-weight:900;font-size:18px}
+.level-info{flex:1}.level-info b{display:block;font-size:17px}.level-info span{font-size:13px;color:#806c58;font-weight:700}
+.topbar{width:min(760px,100%);display:flex;align-items:center;gap:9px;margin:0 auto 10px}
+.back-btn{border:0;border-radius:50%;width:42px;height:42px;background:white;box-shadow:var(--shadow);font-size:18px;flex-shrink:0}
+.progress-track{height:15px;flex:1;background:#ffffffb8;border-radius:20px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--tiger),var(--gold));transition:width .3s}
+.stat-chip{background:white;padding:7px 10px;border-radius:15px;font-size:13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
+.game-layout{width:min(760px,100%);display:flex;flex-direction:column;align-items:center}
+.game-mascot{font-size:66px;line-height:1.1;margin:0 0 5px}
+.question-card{width:100%;background:white;border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.topic-tag{display:inline-block;background:var(--purple);padding:5px 12px;border-radius:12px;font-size:12px;font-weight:900;margin-bottom:9px}
+.question-text{font-size:clamp(17px,4.2vw,22px);font-weight:900;line-height:1.45}
+.answers{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px}
+.answer-btn{color:#000;background:white;border:3px solid #efe3d3;border-radius:18px;padding:13px 14px;min-height:58px;text-align:left;font-size:clamp(14px,3.4vw,17px);font-weight:800;display:flex;align-items:center;gap:9px;box-shadow:0 4px 0 #efe3d3}
+.opt-letter{flex:0 0 27px;height:27px;border-radius:50%;background:var(--sky-top);color:white;display:grid;place-items:center;font-size:13px}
+.answer-btn.correct{background:#dff6da;border-color:#7bc96f;box-shadow:0 4px 0 #7bc96f}
+.answer-btn.correct .opt-letter{background:#5fae55}
+.answer-btn.wrong{background:#fce0de;border-color:var(--red);box-shadow:0 4px 0 var(--red)}
+.answer-btn.wrong .opt-letter{background:var(--red-dark)}
+.answer-btn:disabled{cursor:default;opacity:.85}
+.fact-panel{width:100%;background:#fff3d6;border-radius:18px;padding:13px 16px;margin-top:13px;font-size:14px;font-weight:700;line-height:1.5;display:none}
+.fact-panel.show{display:block}
+.next-btn{margin:15px 0 20px;width:min(280px,90%);background:var(--tiger);color:white;border:0;border-radius:18px;padding:14px;font-weight:900;box-shadow:0 5px 0 var(--tiger-dark);display:none}
+.next-btn.show{display:block}
+.result-card{width:min(500px,100%);background:white;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);text-align:center}
+.result-title{font-size:28px;color:var(--red-dark);font-weight:900}
+.stars{font-size:35px;margin:7px 0 15px}
+.result-stats{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.result-stat{display:flex;justify-content:space-between;gap:12px;background:var(--cream);border-radius:13px;padding:10px 13px;font-weight:800}
+.quote{background:var(--sky-bottom);padding:12px;border-radius:15px;font-weight:700}
+.instructions{line-height:1.6;font-weight:700}.instructions li{margin:8px 0}
+.small-note{text-align:center;font-size:12px;font-weight:700;color:#806c58;margin-top:12px}
+@media(max-width:520px){
+ .answers{grid-template-columns:1fr;gap:9px}
+ .answer-btn{min-height:51px;padding:10px 12px}
+ .screen{padding:12px 12px 22px}
+ .panel{padding:17px}
+ .game-mascot{font-size:54px}
+}
+@media(max-height:720px){
+ .home-content{padding-top:1vh}.mascot{font-size:80px}.game-title{margin:5px 0}
+ .screen{padding-top:10px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bg-deco"><div class="sun"></div><div class="cloud one">☁️</div><div class="cloud two">☁️</div></div>
+
+  <section class="screen active" id="home">
+    <div class="home-content">
+      <div class="game-logo">🐯 PERMAINAN KEFAHAMAN BAHASA MELAYU</div>
+      <h1 class="game-title">Pengembaraan<br>Harimau Malaya</h1>
+      <div class="subtitle">Belajar sambil bermain bersama Hari!</div>
+      <div class="mascot" aria-label="Harimau">🐯</div>
+      <div class="menu-btns">
+        <button class="big-btn primary" onclick="showScreen('levels')">▶ Mula Bermain</button>
+        <button class="big-btn secondary" onclick="showScreen('howto')">📚 Cara Bermain</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="levels">
+    <div class="panel">
+      <h2 class="panel-title">Pilih Aras 📚</h2>
+      <div class="level-grid">
+        <button class="level-card" onclick="startLevel(0)"><span class="level-num">1</span><span class="level-info"><b>Aras 1: Rendah</b><span>Membaca ayat tunggal pendek dan mengenal pasti maklumat langsung · 5 soalan</span></span>➡️</button>
+        <button class="level-card" onclick="startLevel(1)"><span class="level-num">2</span><span class="level-info"><b>Aras 2: Sederhana</b><span>Membaca ayat lebih panjang dan memahami hubungan maklumat · 5 soalan</span></span>➡️</button>
+        <button class="level-card" onclick="startLevel(2)"><span class="level-num">3</span><span class="level-info"><b>Aras 3: Susah</b><span>Membaca dua ayat dan membuat inferens · 5 soalan</span></span>➡️</button>
+      </div>
+      <div class="menu-btns"><button class="big-btn secondary" onclick="showScreen('home')">⬅ Kembali</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="howto">
+    <div class="panel">
+      <h2 class="panel-title">Cara Bermain 📚</h2>
+      <ol class="instructions">
+        <li>Pilih satu daripada tiga aras soalan.</li>
+        <li>Baca ayat dan soalan dengan teliti.</li>
+        <li>Pilih satu daripada empat jawapan A, B, C atau D.</li>
+        <li>Jawapan yang betul memberikan 10 markah.</li>
+        <li>Baca maklum balas selepas menjawab, kemudian tekan “Seterusnya”.</li>
+        <li>Jawab semua lima soalan untuk melihat keputusan anda.</li>
+      </ol>
+      <div class="menu-btns"><button class="big-btn secondary" onclick="showScreen('home')">⬅ Kembali</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="game">
+    <div class="topbar">
+      <button class="back-btn" onclick="exitToLevels()" aria-label="Kembali">⬅</button>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="stat-chip">⭐ <span id="chip-score">0</span></div>
+      <div class="stat-chip">❓ <span id="chip-question">1/5</span></div>
+    </div>
+    <div class="game-layout">
+      <div class="game-mascot">🐯</div>
+      <div class="question-card">
+        <span class="topic-tag" id="topic-tag">Kefahaman Bahasa Melayu</span>
+        <div class="question-text" id="question-text"></div>
+      </div>
+      <div class="answers" id="answers"></div>
+      <div class="fact-panel" id="fact-panel" role="status"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Seterusnya ➜</button>
+    </div>
+  </section>
+
+  <section class="screen" id="result">
+    <div class="result-card">
+      <div class="mascot" style="font-size:90px">🐯</div>
+      <div class="result-title" id="result-title">Tahniah!</div>
+      <div class="stars" id="result-stars">⭐⭐⭐</div>
+      <div class="result-stats">
+        <div class="result-stat"><span>Aras</span><span id="r-level">—</span></div>
+        <div class="result-stat"><span>Jumlah Markah</span><span id="r-score">0/50</span></div>
+        <div class="result-stat"><span>Jawapan Betul</span><span id="r-correct">0</span></div>
+        <div class="result-stat"><span>Jawapan Salah</span><span id="r-wrong">0</span></div>
+      </div>
+      <div class="quote" id="hari-quote">Syabas! Teruskan usaha kamu! — Hari 🐯</div>
+      <div class="menu-btns">
+        <button class="big-btn primary" onclick="retryLevel()">🔁 Main Semula</button>
+        <button class="big-btn secondary" onclick="showScreen('levels')">🗺️ Pilih Aras</button>
+        <button class="big-btn tertiary" onclick="showScreen('home')">🏠 Menu Utama</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const LEVELS = [
+  {
+    name: "Aras 1: Rendah",
+    label: "Rendah",
+    focus: "Membaca ayat tunggal pendek dan mengenal pasti maklumat secara langsung.",
+    questions: [
+      {topic:"Kefahaman Bahasa Melayu",q:"Ali makan nasi. Apakah yang Ali makan?",opts:["Roti","Nasi","Mi","Kek"],correct:1,fact:"Jawapan yang betul ialah nasi. Ali makan nasi."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Siti memakai kasut biru. Apakah warna kasut Siti?",opts:["Merah","Hijau","Biru","Kuning"],correct:2,fact:"Jawapan yang betul ialah biru. Siti memakai kasut biru."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Ibu menyapu lantai. Apakah yang ibu lakukan?",opts:["Menyapu","Memasak","Membaca","Menulis"],correct:0,fact:"Jawapan yang betul ialah menyapu. Ibu sedang menyapu lantai."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Adik minum susu. Apakah yang adik minum?",opts:["Air","Teh","Jus","Susu"],correct:3,fact:"Jawapan yang betul ialah susu. Adik minum susu."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Kucing tidur di sofa. Di manakah kucing tidur?",opts:["Katil","Meja","Sofa","Kerusi"],correct:2,fact:"Jawapan yang betul ialah sofa. Kucing tidur di sofa."}
+    ]
+  },
+  {
+    name: "Aras 2: Sederhana",
+    label: "Sederhana",
+    focus: "Membaca ayat yang lebih panjang dan memahami hubungan maklumat.",
+    questions: [
+      {topic:"Kefahaman Bahasa Melayu",q:"Amir membawa payung kerana hari hujan. Mengapakah Amir membawa payung?",opts:["Hari panas","Hari hujan","Hari cerah","Hari mendung"],correct:1,fact:"Jawapan yang betul ialah hari hujan. Amir membawa payung kerana hari hujan."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Aina membaca buku cerita di perpustakaan. Di manakah Aina membaca buku?",opts:["Kantin","Padang","Perpustakaan","Bilik tidur"],correct:2,fact:"Jawapan yang betul ialah perpustakaan. Aina membaca buku cerita di perpustakaan."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Ibu membeli ikan dan sayur di pasar. Apakah yang ibu beli?",opts:["Ayam dan nasi","Roti dan susu","Telur dan buah","Ikan dan sayur"],correct:3,fact:"Jawapan yang betul ialah ikan dan sayur. Itulah barang yang dibeli oleh ibu."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Hakim mencuci tangan sebelum makan. Bilakah Hakim mencuci tangan?",opts:["Selepas tidur","Sebelum makan","Selepas bermain","Sebelum mandi"],correct:1,fact:"Jawapan yang betul ialah sebelum makan. Hakim mencuci tangan sebelum makan."},
+      {topic:"Kefahaman Bahasa Melayu",q:"Sara menyimpan buku ke dalam beg selepas belajar. Apakah yang Sara lakukan selepas belajar?",opts:["Menyimpan buku","Membaca buku","Membeli buku","Meminjam buku"],correct:0,fact:"Jawapan yang betul ialah menyimpan buku. Sara menyimpan buku selepas belajar."}
+    ]
+  },
+  {
+    name: "Aras 3: Susah",
+    label: "Susah",
+    focus: "Membaca dua ayat dan membuat inferens atau memahami sebab dan akibat.",
+    questions: [
+      {topic:"Inferens dan Sebab Akibat",q:"Danish terlupa membawa payung. Bajunya basah ketika pulang. Mengapakah baju Danish basah?",opts:["Dia mandi","Dia bermain air","Dia terkena hujan","Dia mencuci baju"],correct:2,fact:"Jawapan yang betul ialah dia terkena hujan. Danish terlupa membawa payung, lalu bajunya basah ketika pulang."},
+      {topic:"Inferens dan Sebab Akibat",q:"Aina belajar setiap malam. Dia mendapat markah yang tinggi. Mengapakah Aina mendapat markah tinggi?",opts:["Dia rajin belajar","Dia suka bermain","Dia selalu tidur","Dia tidak membaca"],correct:0,fact:"Jawapan yang betul ialah dia rajin belajar. Usaha belajar membantu Aina mendapat markah yang tinggi."},
+      {topic:"Inferens dan Sebab Akibat",q:"Amir melihat seorang nenek membawa beg yang berat. Amir segera membantu nenek itu. Apakah sikap Amir?",opts:["Malas","Sombong","Pemarah","Baik hati"],correct:3,fact:"Jawapan yang betul ialah baik hati. Amir membantu nenek yang membawa beg berat."},
+      {topic:"Inferens dan Sebab Akibat",q:"Siti berlari di lantai yang basah. Dia tergelincir dan terjatuh. Apakah yang patut Siti lakukan?",opts:["Berlari lebih laju","Berjalan dengan berhati-hati","Melompat di lantai","Bermain di lantai basah"],correct:1,fact:"Jawapan yang betul ialah berjalan dengan berhati-hati supaya tidak tergelincir lagi."},
+      {topic:"Inferens dan Sebab Akibat",q:"Ibu menutup semua tingkap. Angin bertiup kencang dan langit menjadi gelap. Apakah yang mungkin berlaku?",opts:["Hari semakin panas","Matahari semakin terang","Hujan akan turun","Cuaca menjadi cerah"],correct:2,fact:"Jawapan yang betul ialah hujan akan turun. Angin kencang dan langit gelap boleh menandakan hujan."}
+    ]
+  }
+];
+
+let currentLevel = 0;
+let questionIndex = 0;
+let score = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = false;
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+function startLevel(levelIndex){
+  currentLevel = levelIndex;
+  questionIndex = 0;
+  score = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  answered = false;
+  document.getElementById("chip-score").textContent = "0";
+  showScreen("game");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const level = LEVELS[currentLevel];
+  const question = level.questions[questionIndex];
+  answered = false;
+  document.getElementById("topic-tag").textContent = question.topic;
+  document.getElementById("question-text").textContent = question.q;
+  document.getElementById("chip-score").textContent = score;
+  document.getElementById("chip-question").textContent = `${questionIndex+1}/${level.questions.length}`;
+  document.getElementById("progress-fill").style.width = `${(questionIndex/level.questions.length)*100}%`;
+  const answers = document.getElementById("answers");
+  answers.innerHTML = "";
+  question.opts.forEach((option,index)=>{
+    const button = document.createElement("button");
+    button.className = "answer-btn";
+    button.type = "button";
+    const letter = document.createElement("span");
+    letter.className = "opt-letter";
+    letter.textContent = String.fromCharCode(65+index);
+    const text = document.createElement("span");
+    text.textContent = option;
+    button.append(letter,text);
+    button.addEventListener("click",()=>selectAnswer(index,button));
+    answers.appendChild(button);
+  });
+  const fact = document.getElementById("fact-panel");
+  fact.textContent = "";
+  fact.classList.remove("show");
+  const next = document.getElementById("next-btn");
+  next.classList.remove("show");
+  next.textContent = questionIndex === level.questions.length-1 ? "Lihat Keputusan 🏆" : "Seterusnya ➜";
+}
+
+function selectAnswer(selectedIndex, selectedButton){
+  if(answered) return;
+  answered = true;
+  const question = LEVELS[currentLevel].questions[questionIndex];
+  const buttons = [...document.querySelectorAll(".answer-btn")];
+  buttons.forEach((button,index)=>{
+    button.disabled = true;
+    if(index === question.correct) button.classList.add("correct");
+  });
+  if(selectedIndex === question.correct){
+    score += 10;
+    correctCount++;
+    selectedButton.classList.add("correct");
+    document.getElementById("hari-quote").textContent = "Syabas! Teruskan usaha kamu! — Hari 🐯";
+  }else{
+    wrongCount++;
+    selectedButton.classList.add("wrong");
+  }
+  document.getElementById("chip-score").textContent = score;
+  const fact = document.getElementById("fact-panel");
+  fact.textContent = (selectedIndex === question.correct ? "Betul! ⭐ " : "Belum tepat. 💡 ") + question.fact;
+  fact.classList.add("show");
+  document.getElementById("progress-fill").style.width = `${((questionIndex+1)/LEVELS[currentLevel].questions.length)*100}%`;
+  document.getElementById("next-btn").classList.add("show");
+}
+
+function nextQuestion(){
+  if(!answered) return;
+  if(questionIndex < LEVELS[currentLevel].questions.length-1){
+    questionIndex++;
+    renderQuestion();
+  }else{
+    showResults();
+  }
+}
+
+function showResults(){
+  const total = LEVELS[currentLevel].questions.length;
+  document.getElementById("r-level").textContent = LEVELS[currentLevel].name;
+  document.getElementById("r-score").textContent = `${score}/${total*10}`;
+  document.getElementById("r-correct").textContent = `${correctCount}/${total}`;
+  document.getElementById("r-wrong").textContent = `${wrongCount}/${total}`;
+  document.getElementById("result-title").textContent = correctCount === total ? "Hebat! Semua Betul!" : correctCount >= 3 ? "Tahniah! Teruskan!" : "Jangan Putus Asa!";
+  const stars = correctCount === total ? "⭐⭐⭐" : correctCount >= 3 ? "⭐⭐" : correctCount >= 1 ? "⭐" : "🌟";
+  document.getElementById("result-stars").textContent = stars;
+  document.getElementById("hari-quote").textContent = correctCount === total
+    ? "Cemerlang! Kamu menjawab semua soalan dengan betul! — Hari 🐯"
+    : correctCount >= 3
+      ? "Bagus! Teruskan membaca dan berlatih. — Hari 🐯"
+      : "Terus berusaha! Cuba lagi untuk meningkatkan markah. — Hari 🐯";
+  showScreen("result");
+}
+
+function retryLevel(){startLevel(currentLevel)}
+function exitToLevels(){
+  if(confirm("Kembali ke pilihan aras? Kemajuan untuk pusingan ini akan hilang.")){
+    showScreen("levels");
+  }
+}
+</script>
+</body>
+</html>
